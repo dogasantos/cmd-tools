@@ -7,12 +7,14 @@ import (
 	"net"
 	"os"
 	"regexp"
-	"strings"
 )
 
 func main() {
 	includePorts := flag.Bool("ports", false, "include ports in the output")
 	flag.Parse()
+
+	ipv4Regex := regexp.MustCompile(`(\b\d{1,3}(\.\d{1,3}){3}\b)(:\d+)?`)
+	ipv6Regex := regexp.MustCompile(`(\b[0-9a-fA-F:]+\b)(:\d+)?`)
 
 	scanner := bufio.NewScanner(os.Stdin)
 	lines := make(chan string)
@@ -21,12 +23,25 @@ func main() {
 	go func() {
 		for line := range lines {
 			if *includePorts {
-				if isValidIPWithPort(line) {
-					results <- line
+				matches := ipv4Regex.FindAllString(line, -1)
+				matches = append(matches, ipv6Regex.FindAllString(line, -1)...)
+				for _, match := range matches {
+					if isValidIP(match) || isValidIPWithPort(match) {
+						results <- match
+					}
 				}
 			} else {
-				if isValidIP(line) {
-					results <- line
+				matches := ipv4Regex.FindAllStringSubmatch(line, -1)
+				for _, match := range matches {
+					if isValidIP(match[1]) {
+						results <- match[1]
+					}
+				}
+				matches = ipv6Regex.FindAllStringSubmatch(line, -1)
+				for _, match := range matches {
+					if isValidIP(match[1]) {
+						results <- match[1]
+					}
 				}
 			}
 		}
@@ -50,24 +65,11 @@ func main() {
 }
 
 func isValidIPWithPort(s string) bool {
-	if strings.Contains(s, ":") {
-		if strings.Count(s, ":") > 1 {
-			host, port, err := net.SplitHostPort(s)
-			if err != nil {
-				return false
-			}
-			if isValidIP(host) && isValidPort(port) {
-				return true
-			}
-		}
-		re := regexp.MustCompile(`^(\d+\.\d+\.\d+\.\d+):(\d+)$`)
-		if matches := re.FindStringSubmatch(s); matches != nil {
-			if isValidIP(matches[1]) && isValidPort(matches[2]) {
-				return true
-			}
-		}
+	host, port, err := net.SplitHostPort(s)
+	if err != nil {
+		return false
 	}
-	return isValidIP(s)
+	return isValidIP(host) && isValidPort(port)
 }
 
 func isValidIP(s string) bool {
@@ -76,5 +78,12 @@ func isValidIP(s string) bool {
 
 func isValidPort(port string) bool {
 	re := regexp.MustCompile(`^\d+$`)
-	return re.MatchString(port)
+	if !re.MatchString(port) {
+		return false
+	}
+	p, err := strconv.Atoi(port)
+	if err != nil || p < 1 || p > 65535 {
+		return false
+	}
+	return true
 }

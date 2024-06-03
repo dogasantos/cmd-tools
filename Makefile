@@ -13,8 +13,6 @@ all: $(BINARIES)
 # Rule to build each binary
 $(OUTDIR)/%: %.go
 	@mkdir -p $(OUTDIR)
-  go mod init github.com/dogasantos/cmd-tools
-  go mod tidy
 	go build -o $@ $<
 
 # Install target to copy binaries to the output directory

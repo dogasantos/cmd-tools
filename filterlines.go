@@ -1,3 +1,7 @@
+/*
+The program removes all lines from file1 that also appear in file2 and outputs the remaining lines. 
+It’s useful for filtering out unwanted lines from a file based on a list of lines provided in another file.
+*/
 package main
 
 import (

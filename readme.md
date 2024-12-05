@@ -1,6 +1,6 @@
 # uniquelines.go
 
-Show lines that are present on file 1 but are not present in file 2 (line orde does not matter)
+Show lines that are present on file 1 but are not present in file 2 (line order does not matter)
 
 # letters.go
 

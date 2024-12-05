@@ -35,7 +35,7 @@ lower everything (pipe)
 # toupper.go
 upper everything (pipe)
 
-# filterfile.go
+# filterlinesab.go
 read two files and remove from the first file any content present in the second file (non destructive, it just print the result to stdout)
 
 # filterips.go

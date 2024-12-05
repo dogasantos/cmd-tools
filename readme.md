@@ -39,6 +39,7 @@ upper everything (pipe)
 read two files and remove from the first file any content present in the second file (non destructive, it just print the result to stdout)
 
 # filterips.go
-
 take text as input and prints out just found ip addressess and/or ports along with ips:
 
+# filterlines.go
+take a file from -l <file> or stdin and remove lines based on a subset of rules (fuzzy match, regex match, string match, char count and randomness)

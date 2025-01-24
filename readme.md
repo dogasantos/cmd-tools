@@ -4,7 +4,7 @@ Show lines that are present on file 1 but are not present in file 2 (line order 
 
 # letters.go
 
-Remove anything but letters (a-z) from strings (use with pipe)
+Remove everything but letters (a-z) from strings (use with pipe)
 ex:
 ```cat text.txt |letters ```
 

@@ -28,6 +28,20 @@ $ cat file.txt|numbers
 331
 44
 ```
+# filterurl
+
+this utility will help to show or filter out ip-based urls from a file. 
+
+```
+https://1.1.1.1:9191
+https://example.com:9191
+```
+
+-omit-ip will display only https://example.com:9191
+-only-ip will display only https://1.1.1.1:9191
+
+
+
 
 # tolower.go
 lower everything (pipe)
